@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'services/government_service.dart'; // GovernmentService'in doğru yolu
 import 'models/government_agency.dart'; // GovernmentAgency'i içe aktarıyoruz
+import 'government_agency_detail_page.dart'; // GovernmentAgencyDetailPage'i içe aktarıyoruz
 
 void main() {
   runApp(const MyApp());
@@ -25,12 +26,13 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  HomePageState createState() => HomePageState(); // _HomePageState yerine HomePageState
+  HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> { // _HomePageState yerine HomePageState
+class HomePageState extends State<HomePage> {
   final GovernmentService _service = GovernmentService();
   List<GovernmentAgency> _agencies = [];
+  List<GovernmentAgency> _filteredAgencies = [];
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -45,6 +47,7 @@ class HomePageState extends State<HomePage> { // _HomePageState yerine HomePageS
       await _service.fetchGovernmentAgencies().then((agencies) {
         setState(() {
           _agencies = agencies;
+          _filteredAgencies = agencies;
           _isLoading = false;
         });
       });
@@ -56,26 +59,61 @@ class HomePageState extends State<HomePage> { // _HomePageState yerine HomePageS
     }
   }
 
+  void _filterAgencies(String query) {
+    final filtered = _agencies.where((agency) {
+      final titleLower = agency.title.toLowerCase();
+      final searchLower = query.toLowerCase();
+      return titleLower.contains(searchLower);
+    }).toList();
+
+    setState(() {
+      _filteredAgencies = filtered;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Kamu Kurumları'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(56.0),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: _filterAgencies,
+              decoration: const InputDecoration(
+                hintText: 'Ara...',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
               ? Center(child: Text('Error: $_errorMessage'))
               : ListView.builder(
-                  itemCount: _agencies.length,
+                  itemCount: _filteredAgencies.length,
                   itemBuilder: (context, index) {
-                    final agency = _agencies[index];
+                    final agency = _filteredAgencies[index];
                     return ListTile(
                       title: Text(agency.title),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GovernmentAgencyDetailPage(agency: agency),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
     );
   }
 }
+
 
