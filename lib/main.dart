@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'services/government_service.dart'; // GovernmentService'in doğru yolu
-import 'models/government_agency.dart'; // GovernmentAgency'i içe aktarıyoruz
-import 'government_agency_detail_page.dart'; // GovernmentAgencyDetailPage'i içe aktarıyoruz
+import 'services/government_service.dart'; 
+import 'models/government_agency.dart';
+import 'government_agency_detail_page.dart';
 
 void main() {
   runApp(const MyApp());
