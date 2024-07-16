@@ -24,10 +24,7 @@ class GovernmentService {
         throw Exception('Failed to load agencies: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      throw Exception('Error: Veri yüklenirken hata oluştu.');
     }
   }
 }
-
-
-

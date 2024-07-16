@@ -94,7 +94,7 @@ class HomePageState extends State<HomePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
-              ? Center(child: Text('Error: $_errorMessage'))
+              ? Center(child: Text('Error: Veri yüklenirken hata oluştu'))
               : ListView.builder(
                   itemCount: _filteredAgencies.length,
                   itemBuilder: (context, index) {
@@ -116,4 +116,4 @@ class HomePageState extends State<HomePage> {
   }
 }
 
-
+ 
